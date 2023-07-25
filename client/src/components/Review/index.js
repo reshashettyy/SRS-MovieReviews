@@ -4,8 +4,9 @@ import Link from '@mui/material/Link';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useNavigate } from 'react-router-dom';
+import Review from "./Review"
 
-const Landing = () => {
+const App = () => {
   const navigate = useNavigate();
 
   return (
@@ -18,40 +19,42 @@ const Landing = () => {
           <Link
             color="inherit"
             style={{ cursor: 'pointer', marginRight: '20px' }}
-            onClick={() => navigate('/Search')}
+            onClick={() => navigate('/')}
+          >
+            Landing
+          </Link>
+          <Link
+            color="inherit"
+            style={{ cursor: 'pointer', marginRight: '20px' }}
+            onClick={() => navigate('/search')}
           >
             Search
           </Link>
           <Link
             color="inherit"
-            style={{ cursor: 'pointer', marginRight: '20px' }}
-            onClick={() => navigate('/Review')}
-          >
-            Review
-          </Link>
-          <Link
-            color="inherit"
             style={{ cursor: 'pointer' }}
-            onClick={() => navigate('/MyPage')}
+            onClick={() => navigate('/mypage')}
           >
             My Page
           </Link>
         </Toolbar>
       </AppBar>
 
-      <div style={{ marginTop: '20px' }}>
+      {/* <div style={{ marginTop: '20px' }}>
         <Typography variant="h3" color="inherit" noWrap>
-          Welcome to the Movie App Landing Page
+          Review Page
         </Typography>
         <Typography variant="h5" color="inherit" noWrap>
-          Discover and review your favorite movies!
+          Write reviews for your favorite movies!
         </Typography>
-      </div>
+      </div> */}
 
-      {/* You can add more content for the Landing page here */}
+      <Review/>
+
+      {/* You can add more content for the Review page here */}
 
     </div>
   );
 };
 
-export default Landing;
+export default App;

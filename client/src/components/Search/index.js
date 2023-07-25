@@ -5,7 +5,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useNavigate } from 'react-router-dom';
 
-const Landing = () => {
+const Search = () => {
   const navigate = useNavigate();
 
   return (
@@ -18,21 +18,21 @@ const Landing = () => {
           <Link
             color="inherit"
             style={{ cursor: 'pointer', marginRight: '20px' }}
-            onClick={() => navigate('/Search')}
+            onClick={() => navigate('/')}
           >
-            Search
+            Landing
           </Link>
           <Link
             color="inherit"
             style={{ cursor: 'pointer', marginRight: '20px' }}
-            onClick={() => navigate('/Review')}
+            onClick={() => navigate('/review')}
           >
             Review
           </Link>
           <Link
             color="inherit"
             style={{ cursor: 'pointer' }}
-            onClick={() => navigate('/MyPage')}
+            onClick={() => navigate('/mypage')}
           >
             My Page
           </Link>
@@ -41,17 +41,17 @@ const Landing = () => {
 
       <div style={{ marginTop: '20px' }}>
         <Typography variant="h3" color="inherit" noWrap>
-          Welcome to the Movie App Landing Page
+          Search Page
         </Typography>
         <Typography variant="h5" color="inherit" noWrap>
-          Discover and review your favorite movies!
+          Search for your favorite movies here!
         </Typography>
       </div>
 
-      {/* You can add more content for the Landing page here */}
+      {/* You can add more content for the Search page here */}
 
     </div>
   );
 };
 
-export default Landing;
+export default Search;
