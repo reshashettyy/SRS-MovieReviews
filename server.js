@@ -17,6 +17,29 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
+app.post('/api/getMovies', (req, res) => {
+let connection = mysql.createConnection(config);
+
+
+
+let sql = 'SELECT * FROM movies';
+
+connection.query(sql, (error, results) => {
+	if (error) {
+	  console.error(error);
+	  res.status(500).send('Internal Server Error');
+	  return;
+	}
+
+let string = JSON.stringify(results);
+let obj = JSON.parse(string);
+res.send(obj);
+
+});
+connection.end();
+
+});
+
 
 app.post('/api/loadUserSettings', (req, res) => {
 
@@ -40,6 +63,27 @@ app.post('/api/loadUserSettings', (req, res) => {
 	connection.end();
 });
 
+
+app.post('/api/addReview', (req, res) => {
+	let connection = mysql.createConnection(config);
+  
+	//let { movieId, userId, reviewTitle, reviewContent, reviewScore } = req.body;
+  
+	let sql = `INSERT INTO Review (movieId, userId, reviewTitle, reviewContent, reviewScore) VALUES (?, ?, ?, ?, ?)`;
+	let data = [req.body.movieId, req.body.userId, req.body.reviewTitle, req.body.reviewContent, req.body.reviewScore];
+  
+	connection.query(sql, data, (error, results) => {
+	  if (error) {
+		console.error(error);
+		res.status(500).send('Internal Server Error');
+		return;
+	  }
+  
+	  res.send('Review added successfully');
+	});
+  
+	connection.end();
+  });
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
