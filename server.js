@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import response from 'express';
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -17,10 +18,61 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
+app.post('/api/SearchedMovies', (req, res) => {
+	let connection = mysql.createConnection(config);
+  
+	const { title, actor, director } = req.body;
+	let sql =
+  'SELECT M.name, CONCAT(D.first_name, " ", D.last_name) AS director_name, ' +
+  'GROUP_CONCAT(DISTINCT A.first_name, " ", A.last_name) AS ActorsNames, ' +
+  'GROUP_CONCAT(DISTINCT R.reviewContent) AS reviews, ' +
+  'AVG(R.reviewScore) AS avg_review_score ' +
+  'FROM movies M ' +
+  'LEFT JOIN movies_directors MD ON M.id = MD.movie_ID ' +
+  'LEFT JOIN directors D ON D.id = MD.director_id ' +
+  'LEFT JOIN roles RO ON M.id = RO.movie_ID ' +
+  'LEFT JOIN actors A ON A.id = RO.actor_id ' +
+  'LEFT JOIN Review R ON M.id = R.movieID ';
+
+const data = [];
+
+if (title || actor || director) {
+  sql += 'WHERE ';
+  if (title) {
+    sql += 'M.name LIKE ? ';
+    data.push(`%${title}%`);
+  }
+  if (actor) {
+    if (title) sql += 'AND ';
+    sql += 'CONCAT(A.first_name, " ", A.last_name) LIKE ? ';
+    data.push(`%${actor}%`);
+  }
+  if (director) {
+    if (title || actor) sql += 'AND ';
+    sql += 'CONCAT(D.first_name, " ", D.last_name) LIKE ? ';
+    data.push(`%${director}%`);
+  }
+}
+
+sql +=
+  'GROUP BY M.name, director_name, R.reviewContent';
+
+	connection.query(sql, data, (error, results) => {
+	  if (error) {
+		console.error(error);
+		res.status(500).send('Internal Server Error');
+		return;
+	  }
+  
+	  let string = JSON.stringify(results);
+	  res.send({ express: string });
+	});
+  
+	connection.end();
+  });  
+
 app.post('/api/getMovies', (req, res) => {
 let connection = mysql.createConnection(config);
-
-
 
 let sql = 'SELECT * FROM movies';
 
