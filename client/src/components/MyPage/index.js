@@ -5,12 +5,20 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
-import { Select, MenuItem, TextField, Button, FormControl, InputLabel } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 
 let serverURL = "";
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const serverURL = "";
 
   const [intialMovies, setintialMovies] = useState([
     {
@@ -127,11 +135,28 @@ const MyPage = () => {
     setTrailerLink(event.target.value);
   };
 
+  const callApiAddTrailer = async () => {
+    const url = serverURL + '/api/addTrailer';
+    console.log(url);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        movieID: movieID,
+        trailerLink: trailerLink
+      }),
+    });
+    
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+    return body;
+    };
+
   const handleAddTrailer = () => {
-    // Perform any action you want with the selected movie and trailer link
-    console.log("Selected Movie:", selectedMovie);
-    console.log("Trailer Link:", trailerLink);
-    // Reset the input fields after adding the trailer
+    callApiAddTrailer()
     setSelectedMovie("");
     setTrailerLink("");
   };
@@ -154,6 +179,17 @@ const MyPage = () => {
     background: "#f2f2f2", // Light gray background color
     boxShadow: "3px 3px 5px rgba(0, 0, 0, 0.1)", // Shadow effect
     transition: "transform 0.3s ease-in-out",
+  };
+
+  const newsBoxStyle = {
+    width: "85%", // Adjust the width of the news boxes
+    height: "382px", // Adjust the height of the news boxes
+    border: "1px solid #ccc",
+    padding: "10px",
+    textAlign: "center",
+    background: "#f2f2f2", // Light gray background color
+    boxShadow: "3px 3px 5px rgba(0, 0, 0, 0.1)", // Shadow effect
+    marginLeft: "20px",
   };
 
   const movieBoxHover = {
@@ -262,14 +298,17 @@ const MyPage = () => {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12}>
+        <Grid item xs={12} sm={6} style={{ marginTop: "2mm" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} >
               <Typography variant="h4" gutterBottom>
                 Add Movie Trailer
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                  Pssstt! Click on the image to see the trailer.
+                </Typography>
               </Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={15} sm={11}>
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Select Movie</InputLabel>
                 <Select
@@ -288,7 +327,7 @@ const MyPage = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={16} sm={11}>
               <TextField
                 label="Trailer Link"
                 fullWidth
@@ -302,6 +341,45 @@ const MyPage = () => {
               <Button variant="contained" onClick={handleAddTrailer}>
                 Add Trailer
               </Button>
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+            <Typography variant="h4" gutterBottom sx={{ marginTop: "10px" }}>
+              Current News
+            </Typography>
+            </Grid>
+
+            <Grid container spacing={-2}>
+              <Grid item xs={6}>
+                <div style={newsBoxStyle}>
+                  <img
+                    src="https://example.com/news-image1.jpg"
+                    alt="News 1"
+                    style={{ width: "80%", height: "auto" }}
+                  />
+                  <Typography variant="subtitle1" gutterBottom>
+                    News Article 1
+                  </Typography>
+                  <Typography variant="body2">
+                    This is the description of the first news article.
+                  </Typography>
+                </div>
+              </Grid>
+              <Grid item xs={6} >
+                <div style={newsBoxStyle}>
+                  <img
+                    src="https://example.com/news-image2.jpg"
+                    alt="News 2"
+                    style={{ width: "80%", height: "auto" }}
+                  />
+                  <Typography variant="subtitle1" gutterBottom>
+                    News Article 2
+                  </Typography>
+                  <Typography variant="body2">
+                    This is the description of the second news article.
+                  </Typography>
+                </div>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
