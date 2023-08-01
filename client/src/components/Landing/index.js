@@ -74,10 +74,10 @@ const Landing = () => {
 
       <div style={landingStyle}>
         <Typography variant="h3" color="inherit" noWrap style={headingStyle}>
-          Welcome to the Movie App Landing Page
+          Welcome to Lets Review Movie Together WebPage
         </Typography>
         <Typography variant="h5" color="inherit" noWrap>
-          Discover and review your favorite movies!
+          Discover and review your favorite movies and movie trailers!
         </Typography>
 
         <div style={{ marginTop: '20px' }}>
