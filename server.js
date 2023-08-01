@@ -136,7 +136,7 @@ app.post("/api/addReview", (req, res) => {
   connection.end();
 });
 
-aapp.post("/api/addTrailer", (req, res) => {
+app.post("/api/addTrailer", (req, res) => {
 	let connection = mysql.createConnection(config);
   
 	let sql = `UPDATE movies SET trailers = ? WHERE ID = ?`;
@@ -151,11 +151,12 @@ aapp.post("/api/addTrailer", (req, res) => {
   
 	  console.log("Trailer added"); 
   
-	  res.send("Trailer added successfully");
-  
-	  connection.end();
+	  res.json({ success: true, message: "Trailer added successfully" });
+    //res.send("Trailer added successfully");
+
+    connection.end();
 	});
 });  
 
-app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
-//app.listen(port, '172.31.31.77'); //for the deployed version, specify the IP address of the server
+
+app.listen(port, () => console.log(`Listening on port ${port}`)); 

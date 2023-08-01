@@ -18,7 +18,7 @@ let serverURL = "";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const serverURL = "";
+  // const serverURL = "";
 
   const [intialMovies, setintialMovies] = useState([
     {
@@ -81,6 +81,8 @@ const MyPage = () => {
   const [selectedMovie, setSelectedMovie] = useState("");
   const [trailerLink, setTrailerLink] = useState("");
   const [movieID, setMovieID] = useState();
+  // const [showTrailerLink, setShowTrailerLink] = useState(false);
+  const [databaseTrailerLink, setDatabaseTrailerLink] = useState("");
 
   React.useEffect(() => {
     getMovieID(movies, selectedMovie);
@@ -100,8 +102,8 @@ const MyPage = () => {
   const loadMovies = () => {
     callApiLoadMovies(serverURL)
       .then((res) => {
-        console.log("callApiLoadMovies returned: ", res);
-        console.log("callApiLoadMovies parsed: ", res);
+        // console.log("callApiLoadMovies returned: ", res);
+        console.log("callApiLoadMovies parsed: ", res[0]);
         setMovies(res);
       })
       .catch((error) => {
@@ -129,6 +131,7 @@ const MyPage = () => {
 
   const handleMovieChange = (event) => {
     setSelectedMovie(event.target.value);
+    //checkTrailerLink(event.target.value);
   };
 
   const handleTrailerChange = (event) => {
@@ -136,33 +139,70 @@ const MyPage = () => {
   };
 
   const callApiAddTrailer = async () => {
-    const url = serverURL + '/api/addTrailer';
+    const url = serverURL + "/api/addTrailer";
     console.log(url);
-    
+
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         movieID: movieID,
-        trailerLink: trailerLink
+        trailerLink: trailerLink,
       }),
     });
-    
+
     const body = await response.json();
     if (response.status !== 200) throw Error(body.message);
     return body;
-    };
+  };
 
   const handleAddTrailer = () => {
-    callApiAddTrailer()
+    const selectedMovieInfo = movies.find(
+      (movie) => movie.name === selectedMovie
+    );
+
+    if (selectedMovieInfo && selectedMovieInfo.trailerLink) {
+      // If the selected movie has a trailer link in the database
+      const userResponse = window.confirm(
+        `The movie "${selectedMovieInfo.name}" already has a trailer in the database. Do you want to watch it?`
+      );
+
+      if (userResponse) {
+        // Open the trailer link in a new tab/window
+        window.open(selectedMovieInfo.trailerLink, "_blank");
+        return; // Return here to prevent adding the trailer link again
+      }
+    }
+
+    // If the selected movie does not have a trailer link in the database or the user declined to watch the trailer, proceed to add it
+    callApiAddTrailer();
     setSelectedMovie("");
     setTrailerLink("");
+    setDatabaseTrailerLink("");
   };
 
   const handleMovieClick = (trailerLink) => {
     window.open(trailerLink, "_blank"); // Open the trailer link in a new tab/window
+  };
+
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+
+  const handleShowTrailer = () => {
+    if (selectedMovie) {
+      const selectedMovieInfo = movies.find(
+        (movie) => movie.name === selectedMovie
+      );
+      if (selectedMovieInfo && selectedMovieInfo.trailers) {
+        setDatabaseTrailerLink(selectedMovieInfo.trailers);
+        setShowErrorMessage(false); // Hide the error message
+      } else {
+        // If the trailer link is not available in the database, set databaseTrailerLink to an empty string and show the error message
+        setDatabaseTrailerLink("");
+        setShowErrorMessage(true);
+      }
+    }
   };
 
   const headingStyle = {
@@ -214,6 +254,10 @@ const MyPage = () => {
     );
   };
 
+  const handleNewsBoxClick = (articleLink) => {
+    window.open(articleLink, "_blank"); // Open the news article link in a new tab/window
+  };
+
   return (
     <div>
       <AppBar position="static">
@@ -251,7 +295,7 @@ const MyPage = () => {
             My Page
           </Typography>
           <Typography variant="h5" color="inherit" noWrap>
-            View and manage your favorite movies!
+            View and remanence your favorite movie trailers!
           </Typography>
         </div>
       </div>
@@ -300,11 +344,11 @@ const MyPage = () => {
         </Grid>
         <Grid item xs={12} sm={6} style={{ marginTop: "2mm" }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} >
+            <Grid item xs={12}>
               <Typography variant="h4" gutterBottom>
                 Add Movie Trailer
                 <Typography variant="body2" color="textSecondary" gutterBottom>
-                  Pssstt! Click on the image to see the trailer.
+                  Select a movie and find the trailer, or add your own trailer link!
                 </Typography>
               </Typography>
             </Grid>
@@ -341,44 +385,94 @@ const MyPage = () => {
               <Button variant="contained" onClick={handleAddTrailer}>
                 Add Trailer
               </Button>
+              <Button
+                variant="contained"
+                onClick={handleShowTrailer}
+                style={{ marginLeft: "10px" }}
+              >
+                Show Trailer Link
+              </Button>
+              {showErrorMessage && (
+                <Typography
+                  variant="h6"
+                  color="error"
+                  style={{ marginTop: "10px" }}
+                >
+                  Trailer Not Available, Please Add A Trailer Link
+                </Typography>
+              )}
+              {databaseTrailerLink && (
+                <Typography variant="body1" style={{ marginTop: "10px" }}>
+                  {databaseTrailerLink}
+                </Typography>
+              )}
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
-            <Typography variant="h4" gutterBottom sx={{ marginTop: "10px" }}>
-              Current News
-            </Typography>
+              <Typography variant="h4" gutterBottom sx={{ marginTop: "10px" }}>
+                Current News
+              </Typography>
             </Grid>
 
             <Grid container spacing={-2}>
               <Grid item xs={6}>
-                <div style={newsBoxStyle}>
-                  <img
-                    src="https://example.com/news-image1.jpg"
-                    alt="News 1"
-                    style={{ width: "80%", height: "auto" }}
-                  />
-                  <Typography variant="subtitle1" gutterBottom>
-                    News Article 1
-                  </Typography>
-                  <Typography variant="body2">
-                    This is the description of the first news article.
-                  </Typography>
-                </div>
+                <a
+                  href="https://www.ctvnews.ca/entertainment/margot-robbie-didn-t-break-character-with-her-barbie-press-looks-1.6500070"
+                  target="_blank"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div
+                    style={newsBoxStyle}
+                    onClick={() =>
+                      handleNewsBoxClick(
+                        "https://www.ctvnews.ca/entertainment/margot-robbie-didn-t-break-character-with-her-barbie-press-looks-1.6500070"
+                      )
+                    }
+                  >
+                    <img
+                      src="https://people.com/thmb/KbXaWZcOfoOjVstqnS3Bd4AgiCo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(551x689:553x691)/Barbie-84bbd2b2160c41c3b051221a3cb382a6.jpg"
+                      alt="Margot Robbie Didn't Break Character"
+                      style={{ width: "80%", height: "75%" }}
+                    />
+                    <Typography variant="subtitle1" gutterBottom>
+                      Margot Robbie Didn't Break Character
+                    </Typography>
+                    <Typography variant="body2">
+                      Margot Robbie remained in character in press conferences
+                      showcasing her dedication to the role.
+                    </Typography>
+                  </div>
+                </a>
               </Grid>
-              <Grid item xs={6} >
-                <div style={newsBoxStyle}>
-                  <img
-                    src="https://example.com/news-image2.jpg"
-                    alt="News 2"
-                    style={{ width: "80%", height: "auto" }}
-                  />
-                  <Typography variant="subtitle1" gutterBottom>
-                    News Article 2
-                  </Typography>
-                  <Typography variant="body2">
-                    This is the description of the second news article.
-                  </Typography>
-                </div>
+              <Grid item xs={6}>
+                <a
+                  href="https://www.theguardian.com/film/2023/aug/01/not-big-in-japan-country-rejects-co-marketing-of-barbie-and-oppenheimer-as-trivialising-nuclear-war"
+                  target="_blank"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div
+                    style={newsBoxStyle}
+                    onClick={() =>
+                      handleNewsBoxClick(
+                        "https://www.theguardian.com/film/2023/aug/01/not-big-in-japan-country-rejects-co-marketing-of-barbie-and-oppenheimer-as-trivialising-nuclear-war"
+                      )
+                    }
+                  >
+                    <img
+                      src="https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg"
+                      alt="Oppenheimer"
+                      style={{ width: "80%", height: "75%" }}
+                    />
+                    <Typography variant="subtitle1" gutterBottom>
+                      #Barbenheimer Backlash
+                    </Typography>
+                    <Typography variant="body2">
+                      Japan's rejection of the co-marketing of Barbie and
+                      Oppenheimer due to concerns about trivializing nuclear
+                      war.
+                    </Typography>
+                  </div>
+                </a>
               </Grid>
             </Grid>
           </Grid>
