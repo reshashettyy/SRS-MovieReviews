@@ -8,12 +8,14 @@ To watch a movie trailer, the user can click on the movie poster, and it will op
 *To add a new trailer link for a movie:*
 - Select the movie from the "Select Movie" dropdown list.Enter the URL of the trailer in the "Trailer Link" text field.
 - Click on the "Add Trailer" button to add the trailer link to the database.
+- *To test the link going into the database use "Finding Nemo" and the trailer link should appear in the table once put into the textbox and the button is clicked*
 
 *To view the trailer link for a selected movie:*
 
 - Click on the "Show Trailer Link" button.
 - If a trailer link is available for the selected movie, it will be displayed below the button.
 - If the trailer link is not available, an error message will be shown.
+- *To test the link appearing on the webpage use "12 Angry Men" and the trailer link should appear*
 
 In the "Current News" section, the user will find news articles related to movies. Clicking on a news article will open the respective article link in a new tab.
 
