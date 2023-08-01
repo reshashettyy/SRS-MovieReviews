@@ -1,9 +1,26 @@
-# My Page
 
-**Top Movies Display:** The component displays a section with a list of top movies. Each movie in the list is represented by an image, title, and description. The images are initially displayed in grayscale and enlarge slightly on hover. Clicking on a movie's image opens the corresponding movie trailer link in a new tab.
+# My Page - Explanation
 
-**Movie Selection:** The component provides a dropdown menu that allows users to select a movie from a list of available movies. The movies available in the dropdown are fetched from a server API during component initialization.
+**How To Use**
 
-**Add Movie Trailer:** Users can add a movie trailer link by selecting a movie from the dropdown menu and providing a trailer link in a text field. Clicking the "Add Trailer" button triggers an action, and the selected movie and trailer link are logged to the console. The input fields are then reset for the next entry.
+To watch a movie trailer, the user can click on the movie poster, and it will open the trailer link in a new tab.
 
-**API Integration:** The component fetches a list of movies from a server API using fetch and populates the dropdown menu with the retrieved movie names.
+*To add a new trailer link for a movie:*
+- Select the movie from the "Select Movie" dropdown list.Enter the URL of the trailer in the "Trailer Link" text field.
+- Click on the "Add Trailer" button to add the trailer link to the database.
+
+*To view the trailer link for a selected movie:*
+
+- Click on the "Show Trailer Link" button.
+- If a trailer link is available for the selected movie, it will be displayed below the button.
+- If the trailer link is not available, an error message will be shown.
+
+In the "Current News" section, the user will find news articles related to movies. Clicking on a news article will open the respective article link in a new tab.
+
+The user can also navigate to other pages using the navigation links in the top-right corner of the page.
+
+**The following APIs are used on this page:**
+
+*Load Movies API:* This API fetches a list of movies from the server. It is used to populate the "Select Movie" dropdown list on the frontend.
+
+*Add Trailer API:* This API allows users to add a new trailer link for a selected movie. The movieID and trailerLink are sent as JSON data in the request body.
